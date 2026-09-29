@@ -89,13 +89,45 @@ def packed_seed(profile: Profile) -> bytes:
     return bytes(buf)
 
 
-def u8(seed: bytes, plate: int, x: int, y: int) -> int:
-    payload = seed + plate.to_bytes(1, "big") + bytes([x, y])
-    return digest(payload)[0]
+def u8(seed: bytes, x: int, y: int) -> bytes:
+    return digest(seed + bytes([x, y]))
 
 
-def density(score: int) -> int:
-    return 24 + (score * 216) // 255
+def grid_n(activity: int) -> int:
+    if activity < 52:
+        return 4
+    if activity < 103:
+        return 6
+    if activity < 154:
+        return 8
+    if activity < 205:
+        return 12
+    return 16
+
+
+def grid_gap(n: int) -> int:
+    if n <= 6:
+        return 10
+    if n <= 8:
+        return 6
+    if n <= 12:
+        return 4
+    return 2
+
+
+def dim_score(profile: Profile, pick: int) -> int:
+    s = profile.scores
+    if pick == 0:
+        return s["REACH"]
+    if pick == 1:
+        return s["VOICE"]
+    if pick == 2:
+        return s["HEAT"]
+    return (s["VINTAGE"] + s["NATIVE"]) // 2
+
+
+INK_RGB = (CYAN, MAGENTA, YELLOW, BLACK)
+INK_HEX = ("#00B5E2", "#E6007A", "#F0BA00", "#111216")
 
 
 def font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
@@ -111,100 +143,60 @@ def font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont | ImageFont.Im
     return ImageFont.load_default()
 
 
-def draw_plate(
+def draw_grid(
     draw: ImageDraw.ImageDraw,
-    origin: tuple[int, int],
-    color: tuple[int, int, int],
-    threshold: int,
-    plate: int,
-    seed: bytes,
-    cell: int,
-    gap: int,
+    profile: Profile,
+    canvas: int,
+    inner: int,
 ) -> None:
-    ox, oy = origin
-    for y in range(8):
-        for x in range(8):
-            on = u8(seed, plate, x, y) < threshold
-            fill = color if on else CELL_OFF
+    seed = packed_seed(profile)
+    n = grid_n(profile.scores["VOICE"])
+    gap = max(2, grid_gap(n) * canvas // 800)
+    cell = (inner - gap * (n - 1)) // n
+    grid_w = n * cell + (n - 1) * gap
+    ox = (canvas - grid_w) // 2
+    radius = 12 if cell >= 80 else 6 if cell >= 40 else 3
+    for y in range(n):
+        for x in range(n):
+            h = u8(seed, x, y)
+            pick = h[1] % 4
+            threshold = 48 + (dim_score(profile, pick) * 180) // 255
+            fill = INK_RGB[pick] if h[0] < threshold else CELL_OFF
             x0 = ox + x * (cell + gap)
-            y0 = oy + y * (cell + gap)
-            draw.rounded_rectangle([x0, y0, x0 + cell, y0 + cell], radius=4, fill=fill)
+            y0 = ox + y * (cell + gap)
+            draw.rounded_rectangle([x0, y0, x0 + cell, y0 + cell], radius=radius, fill=fill)
 
 
 def render_png(profile: Profile) -> Image.Image:
-    seed = packed_seed(profile)
     img = Image.new("RGB", (SIZE, SIZE), BG)
     draw = ImageDraw.Draw(img)
-
-    cell = 56
-    gap = 8
-    plate_w = 8 * cell + 7 * gap
-    gutter = 48
-    grid_w = plate_w * 2 + gutter
-    left = (SIZE - grid_w) // 2
-    top = (SIZE - grid_w) // 2
-
-    plates = [
-        (0, CYAN, density(profile.scores["REACH"]), left, top),
-        (1, MAGENTA, density(profile.scores["VOICE"]), left + plate_w + gutter, top),
-        (2, YELLOW, density(profile.scores["HEAT"]), left, top + plate_w + gutter),
-        (
-            3,
-            BLACK,
-            density((profile.scores["VINTAGE"] + profile.scores["NATIVE"]) // 2),
-            left + plate_w + gutter,
-            top + plate_w + gutter,
-        ),
-    ]
-
-    for plate, color, threshold, x, y in plates:
-        well = 14
-        draw.rounded_rectangle(
-            [x - well, y - well, x + plate_w + well, y + plate_w + well],
-            radius=12,
-            fill=WELL,
-            outline=WELL_LINE,
-            width=1,
-        )
-        draw_plate(draw, (x, y), color, threshold, plate, seed, cell, gap)
+    draw_grid(draw, profile, SIZE, 1080)
     return img
 
 
 def render_svg(profile: Profile) -> str:
     seed = packed_seed(profile)
-    cell = 40
-    gap = 4
-    plate_w = 8 * (cell + gap) - gap
-    gutter = 40
-    left = 32
-    top = 32
-    plates = [
-        (0, "#00B5E2", density(profile.scores["REACH"]), left, top),
-        (1, "#E6007A", density(profile.scores["VOICE"]), left + plate_w + gutter, top),
-        (2, "#F0BA00", density(profile.scores["HEAT"]), left, top + plate_w + gutter),
-        (
-            3,
-            "#111216",
-            density((profile.scores["VINTAGE"] + profile.scores["NATIVE"]) // 2),
-            left + plate_w + gutter,
-            top + plate_w + gutter,
-        ),
-    ]
+    n = grid_n(profile.scores["VOICE"])
+    gap = grid_gap(n)
+    cell = (720 - gap * (n - 1)) // n
+    grid_w = n * cell + (n - 1) * gap
+    ox = (800 - grid_w) // 2
+    rx = 12 if cell >= 80 else 6 if cell >= 40 else 3
     rects: list[str] = []
-    for plate, color, threshold, ox, oy in plates:
-        for y in range(8):
-            for x in range(8):
-                on = u8(seed, plate, x, y) < threshold
-                fill = color if on else "#ECEEF2"
-                x0 = ox + x * (cell + gap)
-                y0 = oy + y * (cell + gap)
-                rects.append(
-                    f'<rect x="{x0}" y="{y0}" width="{cell}" height="{cell}" rx="3" fill="{fill}"/>'
-                )
-    plates_svg = "\n  ".join(rects)
+    for y in range(n):
+        for x in range(n):
+            h = u8(seed, x, y)
+            pick = h[1] % 4
+            threshold = 48 + (dim_score(profile, pick) * 180) // 255
+            fill = INK_HEX[pick] if h[0] < threshold else "#ECEEF2"
+            x0 = ox + x * (cell + gap)
+            y0 = ox + y * (cell + gap)
+            rects.append(
+                f'<rect x="{x0}" y="{y0}" width="{cell}" height="{cell}" rx="{rx}" fill="{fill}"/>'
+            )
     return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
   <rect width="800" height="800" fill="#FFFFFF"/>
-  {plates_svg}
+  {" ".join(rects)}
 </svg>
 """
 

@@ -1,37 +1,50 @@
 import { concatHex, keccak256, toHex, type Hex } from "viem";
 import type { Scores } from "./traits";
 
-function density(score: number): number {
-  return 24 + Math.floor((score * 216) / 255);
+const INK = ["#00B5E2", "#E6007A", "#F0BA00", "#111216"] as const;
+
+export function gridSize(activity: number): number {
+  if (activity < 52) return 4;
+  if (activity < 103) return 6;
+  if (activity < 154) return 8;
+  if (activity < 205) return 12;
+  return 16;
 }
 
-function cellOn(traits: Hex, plate: number, x: number, y: number, threshold: number): boolean {
-  const hash = keccak256(
-    concatHex([traits, toHex(plate, { size: 1 }), toHex(x, { size: 1 }), toHex(y, { size: 1 })]),
-  );
-  return parseInt(hash.slice(-2), 16) < threshold;
+function gapFor(n: number): number {
+  if (n <= 6) return 10;
+  if (n <= 8) return 6;
+  if (n <= 12) return 4;
+  return 2;
 }
 
-const PLATES: { plate: number; color: string; score: (s: Scores) => number; ox: number; oy: number }[] = [
-  { plate: 0, color: "#00B5E2", score: (s) => s.reach, ox: 32, oy: 32 },
-  { plate: 1, color: "#E6007A", score: (s) => s.voice, ox: 420, oy: 32 },
-  { plate: 2, color: "#F0BA00", score: (s) => s.heat, ox: 32, oy: 420 },
-  { plate: 3, color: "#111216", score: (s) => Math.floor((s.vintage + s.native) / 2), ox: 420, oy: 420 },
-];
+function scoreFor(pick: number, s: Scores): number {
+  if (pick === 0) return s.reach;
+  if (pick === 1) return s.voice;
+  if (pick === 2) return s.heat;
+  return Math.floor((s.vintage + s.native) / 2);
+}
 
 export function renderSvg(traits: Hex, scores: Scores): string {
-  const cell = 40;
-  const gap = 4;
+  const n = gridSize(scores.voice);
+  const gap = gapFor(n);
+  const cell = Math.floor((720 - gap * (n - 1)) / n);
+  const gridW = n * cell + (n - 1) * gap;
+  const ox = Math.floor((800 - gridW) / 2);
+  const rx = cell >= 80 ? 12 : cell >= 40 ? 6 : 3;
   const rects: string[] = [];
-  for (const p of PLATES) {
-    const threshold = density(p.score(scores));
-    for (let y = 0; y < 8; y++) {
-      for (let x = 0; x < 8; x++) {
-        const fill = cellOn(traits, p.plate, x, y, threshold) ? p.color : "#ECEEF2";
-        const x0 = p.ox + x * (cell + gap);
-        const y0 = p.oy + y * (cell + gap);
-        rects.push(`<rect x="${x0}" y="${y0}" width="40" height="40" rx="3" fill="${fill}"/>`);
-      }
+  for (let y = 0; y < n; y++) {
+    for (let x = 0; x < n; x++) {
+      const hash = keccak256(concatHex([traits, toHex(x, { size: 1 }), toHex(y, { size: 1 })]));
+      const onByte = parseInt(hash.slice(-2), 16);
+      const pick = parseInt(hash.slice(-4, -2), 16) % 4;
+      const threshold = 48 + Math.floor((scoreFor(pick, scores) * 180) / 255);
+      const fill = onByte < threshold ? INK[pick] : "#ECEEF2";
+      const x0 = ox + x * (cell + gap);
+      const y0 = ox + y * (cell + gap);
+      rects.push(
+        `<rect x="${x0}" y="${y0}" width="${cell}" height="${cell}" rx="${rx}" fill="${fill}"/>`,
+      );
     }
   }
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">

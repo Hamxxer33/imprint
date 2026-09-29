@@ -2,7 +2,7 @@
 
 1/1 NFT passport on **Base**. Mint on the website for **$4**, paid in ETH.
 
-Each token is a unique **type** from that wallet’s Base activity — transactions, age, tokens, NFTs, and Basename. More activity fills more cells. The image is four plates only: no username, no labels. OpenSea rarity comes from on-chain attributes.
+Each token is a unique **type** from that wallet’s Base activity — transactions, age, tokens, NFTs, and Basename. One grid, no username, no labels. Quiet wallets get big blocks; active wallets get small ones. OpenSea rarity comes from on-chain attributes.
 
 ## Utility
 
@@ -43,8 +43,8 @@ Live on Base (`8453`):
 
 | | |
 |---|---|
-| Imprint | [`0xE43E4c3cbB5d572977a3f5F188c3eE8461E2D968`](https://basescan.org/address/0xE43E4c3cbB5d572977a3f5F188c3eE8461E2D968#code) |
-| Deploy tx | [`0xd4a2eccf…12b303`](https://basescan.org/tx/0xd4a2eccff598c6bb73f3660ed2c5960da872b358ca3963bcfeed286e2912b303) |
+| Imprint | [`0x9F9801C4ab9feB470116bc881aeC935E51eA34c6`](https://basescan.org/address/0x9F9801C4ab9feB470116bc881aeC935E51eA34c6#code) |
+| Deploy tx | [`0xe77c9231…c48f9f`](https://basescan.org/tx/0xe77c9231cad0e75511a290b4bc1abfce16693dbac25bc790a5e0f6a7d1c48f9f) |
 
 Price: **$4** mint, **$1** refresh, paid in ETH via Chainlink ETH/USD.
 

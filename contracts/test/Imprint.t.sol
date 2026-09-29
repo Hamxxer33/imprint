@@ -115,6 +115,11 @@ contract ImprintTest is Test {
         assertFalse(_contains(image, "IMPRINT"));
         assertFalse(_contains(image, "trench"));
         assertFalse(_contains(image, "BASE"));
+
+        ArtView view2 = new ArtView();
+        bytes32 quiet = bytes32((uint256(traits) & ~(uint256(0xff) << 232)) | (uint256(10) << 232));
+        bytes32 loud = bytes32((uint256(traits) & ~(uint256(0xff) << 232)) | (uint256(240) << 232));
+        assertTrue(_count(view2.svg(quiet), "<rect") < _count(view2.svg(loud), "<rect"));
     }
 
     function testRejectsWrongPrice() public {
@@ -188,6 +193,22 @@ contract ImprintTest is Test {
             if (ok) return true;
         }
         return false;
+    }
+
+    function _count(string memory haystack, string memory needle) internal pure returns (uint256 n) {
+        bytes memory h = bytes(haystack);
+        bytes memory nd = bytes(needle);
+        if (nd.length == 0 || nd.length > h.length) return 0;
+        for (uint256 i; i <= h.length - nd.length; i++) {
+            bool ok = true;
+            for (uint256 j; j < nd.length; j++) {
+                if (h[i + j] != nd[j]) {
+                    ok = false;
+                    break;
+                }
+            }
+            if (ok) n++;
+        }
     }
 }
 

@@ -24,15 +24,43 @@ library ImprintArt {
     }
 
     function svg(bytes32 traits) internal pure returns (string memory) {
-        return string.concat(
+        uint256 n = _grid(uint8(traits[2]));
+        uint256 gap = _gap(n);
+        uint256 cell = (720 - gap * (n - 1)) / n;
+        uint256 gridW = n * cell + (n - 1) * gap;
+        uint256 ox = (800 - gridW) / 2;
+        string memory rx = cell >= 80 ? "12" : (cell >= 40 ? "6" : "3");
+        string memory out = string.concat(
             '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">',
-            '<rect width="800" height="800" fill="#FFFFFF"/>',
-            _plate(traits, 0, "#00B5E2", 32, 32),
-            _plate(traits, 1, "#E6007A", 420, 32),
-            _plate(traits, 2, "#F0BA00", 32, 420),
-            _plate(traits, 3, "#111216", 420, 420),
-            "</svg>"
+            '<rect width="800" height="800" fill="#FFFFFF"/>'
         );
+        for (uint256 y; y < n; y++) {
+            for (uint256 x; x < n; x++) {
+                uint256 h = uint256(keccak256(abi.encodePacked(traits, uint8(x), uint8(y))));
+                uint8 pick = uint8(h >> 8) % 4;
+                uint256 threshold = 48 + (_score(traits, pick) * 180) / 255;
+                string memory fill = uint8(h) < threshold ? _ink(pick) : "#ECEEF2";
+                uint256 x0 = ox + x * (cell + gap);
+                uint256 y0 = ox + y * (cell + gap);
+                out = string.concat(
+                    out,
+                    '<rect x="',
+                    _u(x0),
+                    '" y="',
+                    _u(y0),
+                    '" width="',
+                    _u(cell),
+                    '" height="',
+                    _u(cell),
+                    '" rx="',
+                    rx,
+                    '" fill="',
+                    fill,
+                    '"/>'
+                );
+            }
+        }
+        return string.concat(out, "</svg>");
     }
 
     function attributes(bytes32 t) internal pure returns (string memory) {
@@ -122,39 +150,33 @@ library ImprintArt {
         return "Legendary";
     }
 
-    function _plate(bytes32 traits, uint8 plate, string memory color, uint256 ox, uint256 oy)
-        private
-        pure
-        returns (string memory)
-    {
-        uint256 score;
-        if (plate == 0) score = uint8(traits[1]);
-        else if (plate == 1) score = uint8(traits[2]);
-        else if (plate == 2) score = uint8(traits[3]);
-        else score = (uint256(uint8(traits[0])) + uint256(uint8(traits[4]))) / 2;
-        uint256 threshold = 24 + (score * 216) / 255;
-        uint256 cell = 40;
-        uint256 gap = 4;
-        string memory out;
-        for (uint256 y; y < 8; y++) {
-            for (uint256 x; x < 8; x++) {
-                uint256 h = uint256(keccak256(abi.encodePacked(traits, plate, uint8(x), uint8(y))));
-                string memory fill = uint8(h) < threshold ? color : "#ECEEF2";
-                uint256 x0 = ox + x * (cell + gap);
-                uint256 y0 = oy + y * (cell + gap);
-                out = string.concat(
-                    out,
-                    '<rect x="',
-                    _u(x0),
-                    '" y="',
-                    _u(y0),
-                    '" width="40" height="40" rx="3" fill="',
-                    fill,
-                    '"/>'
-                );
-            }
-        }
-        return out;
+    function _grid(uint8 activity) private pure returns (uint256) {
+        if (activity < 52) return 4;
+        if (activity < 103) return 6;
+        if (activity < 154) return 8;
+        if (activity < 205) return 12;
+        return 16;
+    }
+
+    function _gap(uint256 n) private pure returns (uint256) {
+        if (n <= 6) return 10;
+        if (n <= 8) return 6;
+        if (n <= 12) return 4;
+        return 2;
+    }
+
+    function _score(bytes32 t, uint8 pick) private pure returns (uint256) {
+        if (pick == 0) return uint8(t[1]);
+        if (pick == 1) return uint8(t[2]);
+        if (pick == 2) return uint8(t[3]);
+        return (uint256(uint8(t[0])) + uint256(uint8(t[4]))) / 2;
+    }
+
+    function _ink(uint8 pick) private pure returns (string memory) {
+        if (pick == 0) return "#00B5E2";
+        if (pick == 1) return "#E6007A";
+        if (pick == 2) return "#F0BA00";
+        return "#111216";
     }
 
     function _band(uint8 v) private pure returns (uint8) {

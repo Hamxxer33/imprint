@@ -270,7 +270,7 @@ export function MintApp() {
         />
         <Utility
           title="OpenSea rarity"
-          body="Type, rarity tier, wallet, and every plate land in tokenURI attributes. OpenSea ranks the collection from those traits. Each wallet is 1/1."
+          body="Type, rarity tier, and wallet scores land in tokenURI attributes. OpenSea ranks the collection from those traits. Each wallet is 1/1."
         />
         <Utility
           title="Refresh"
