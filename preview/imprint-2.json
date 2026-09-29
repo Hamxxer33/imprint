@@ -1,0 +1,52 @@
+{
+  "name": "Imprint #2",
+  "description": "New Fresh \u2014 a 1/1 imprint of @ghost's X history and Base wallet. Rarity Common.",
+  "image": "imprint-2.svg",
+  "attributes": [
+    {
+      "trait_type": "Type",
+      "value": "New Fresh"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Handle",
+      "value": "@ghost"
+    },
+    {
+      "trait_type": "Reach",
+      "value": "Ghost"
+    },
+    {
+      "trait_type": "Voice",
+      "value": "Mute"
+    },
+    {
+      "trait_type": "Heat",
+      "value": "Cold"
+    },
+    {
+      "trait_type": "Native",
+      "value": "Fresh"
+    },
+    {
+      "trait_type": "Bags",
+      "value": "Thin"
+    },
+    {
+      "trait_type": "Vintage",
+      "value": "New"
+    },
+    {
+      "trait_type": "Named",
+      "value": "Anon"
+    },
+    {
+      "trait_type": "Rarity Score",
+      "display_type": "number",
+      "value": 12
+    }
+  ]
+}

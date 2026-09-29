@@ -1,0 +1,52 @@
+{
+  "name": "Imprint #1",
+  "description": "Ancient Machine \u2014 a 1/1 imprint of @trench's X history and Base wallet. Rarity Epic.",
+  "image": "imprint-1.svg",
+  "attributes": [
+    {
+      "trait_type": "Type",
+      "value": "Ancient Machine"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Epic"
+    },
+    {
+      "trait_type": "Handle",
+      "value": "@trench"
+    },
+    {
+      "trait_type": "Reach",
+      "value": "Micro"
+    },
+    {
+      "trait_type": "Voice",
+      "value": "Machine"
+    },
+    {
+      "trait_type": "Heat",
+      "value": "Cold"
+    },
+    {
+      "trait_type": "Native",
+      "value": "Ancient"
+    },
+    {
+      "trait_type": "Bags",
+      "value": "Thin"
+    },
+    {
+      "trait_type": "Vintage",
+      "value": "Young"
+    },
+    {
+      "trait_type": "Named",
+      "value": "Verified"
+    },
+    {
+      "trait_type": "Rarity Score",
+      "display_type": "number",
+      "value": 155
+    }
+  ]
+}

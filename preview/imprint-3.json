@@ -1,0 +1,52 @@
+{
+  "name": "Imprint #3",
+  "description": "Whale Ancient \u2014 a 1/1 imprint of @whale's X history and Base wallet. Rarity Legendary.",
+  "image": "imprint-3.svg",
+  "attributes": [
+    {
+      "trait_type": "Type",
+      "value": "Whale Ancient"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Legendary"
+    },
+    {
+      "trait_type": "Handle",
+      "value": "@whale"
+    },
+    {
+      "trait_type": "Reach",
+      "value": "Famous"
+    },
+    {
+      "trait_type": "Voice",
+      "value": "Quiet"
+    },
+    {
+      "trait_type": "Heat",
+      "value": "Blazing"
+    },
+    {
+      "trait_type": "Native",
+      "value": "Ancient"
+    },
+    {
+      "trait_type": "Bags",
+      "value": "Whale"
+    },
+    {
+      "trait_type": "Vintage",
+      "value": "Veteran"
+    },
+    {
+      "trait_type": "Named",
+      "value": "Verified"
+    },
+    {
+      "trait_type": "Rarity Score",
+      "display_type": "number",
+      "value": 210
+    }
+  ]
+}

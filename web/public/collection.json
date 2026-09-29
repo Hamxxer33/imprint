@@ -1,0 +1,9 @@
+{
+  "name": "Imprint",
+  "description": "1/1 Base passports. Each token is a unique type from the minter's wallet: transactions, age, tokens, NFTs, and Basename. OpenSea rarity is on-chain. Other contracts read passport(address).",
+  "image": "/opensea-logo.png",
+  "banner_image": "/opensea-banner.png",
+  "external_link": "https://basescan.org/address/0xbc162E16E3BB4f8dd25B47a908E211BD413B3a62",
+  "seller_fee_basis_points": 500,
+  "fee_recipient": "0x8564d4849A520D9373f3FB3BCC91c7400E3089B6"
+}

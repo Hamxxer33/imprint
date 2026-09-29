@@ -1,0 +1,31 @@
+# secrets — never commit keys
+.env
+.env.*
+!.env.example
+!**/.env.example
+*.pem
+id_rsa
+id_ed25519
+
+# foundry
+broadcast
+cache
+out
+contracts/out
+contracts/cache
+deployed.json
+
+# node
+node_modules
+.next
+web/.next
+web/node_modules
+.vercel
+
+# python
+**/__pycache__/
+*.pyc
+
+# os
+.DS_Store
+*.log
