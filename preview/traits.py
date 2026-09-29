@@ -90,7 +90,6 @@ class Profile:
         attrs: list[dict] = [
             {"trait_type": "Type", "value": self.type_name},
             {"trait_type": "Rarity", "value": self.rarity},
-            {"trait_type": "Handle", "value": f"@{self.handle}"},
             {"trait_type": "Reach", "value": labels["REACH"]},
             {"trait_type": "Voice", "value": labels["VOICE"]},
             {"trait_type": "Heat", "value": labels["HEAT"]},

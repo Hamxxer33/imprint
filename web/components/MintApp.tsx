@@ -160,7 +160,6 @@ export function MintApp() {
               <span className="font-semibold">{profile.typeName}</span>
               <span className="text-faint">{profile.rarity}</span>
               <span className="font-mono text-faint">score {profile.rarityScore}</span>
-              <span className="font-mono text-faint">{profile.handle}</span>
             </div>
           ) : null}
         </div>

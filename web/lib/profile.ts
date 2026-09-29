@@ -19,7 +19,7 @@ export async function buildProfile(address: Address) {
   const entropy = keccak256(concat([address, xId]));
   const traits = packTraits(scores, entropy);
   const score = rarityScore(scores);
-  const svg = renderSvg(1, traits, scores, handle);
+  const svg = renderSvg(traits, scores);
   return {
     address,
     handle,
@@ -39,6 +39,6 @@ export async function buildProfile(address: Address) {
       basename: wallet.basename ?? null,
     },
     svg,
-    attributes: openseaAttributes(scores, handle),
+    attributes: openseaAttributes(scores),
   };
 }

@@ -1,6 +1,6 @@
 {
   "name": "Imprint #2",
-  "description": "New Fresh \u2014 a 1/1 imprint of @ghost's X history and Base wallet. Rarity Common.",
+  "description": "New Fresh. A 1/1 imprint of a Base wallet. Rarity Common.",
   "image": "imprint-2.svg",
   "attributes": [
     {
@@ -10,10 +10,6 @@
     {
       "trait_type": "Rarity",
       "value": "Common"
-    },
-    {
-      "trait_type": "Handle",
-      "value": "@ghost"
     },
     {
       "trait_type": "Reach",

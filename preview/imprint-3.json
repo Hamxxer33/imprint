@@ -1,6 +1,6 @@
 {
   "name": "Imprint #3",
-  "description": "Whale Ancient \u2014 a 1/1 imprint of @whale's X history and Base wallet. Rarity Legendary.",
+  "description": "Whale Ancient. A 1/1 imprint of a Base wallet. Rarity Legendary.",
   "image": "imprint-3.svg",
   "attributes": [
     {
@@ -10,10 +10,6 @@
     {
       "trait_type": "Rarity",
       "value": "Legendary"
-    },
-    {
-      "trait_type": "Handle",
-      "value": "@whale"
     },
     {
       "trait_type": "Reach",

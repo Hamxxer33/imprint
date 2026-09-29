@@ -124,12 +124,11 @@ export function sanitizeHandle(input: string): string {
   return cleaned || "anon";
 }
 
-export function openseaAttributes(scores: Scores, handle: string) {
+export function openseaAttributes(scores: Scores) {
   const score = rarityScore(scores);
   return [
     { trait_type: "Type", value: typeName(scores) },
     { trait_type: "Rarity", value: rarityName(score) },
-    { trait_type: "Handle", value: handle },
     { trait_type: "Network", value: label("reach", scores.reach) },
     { trait_type: "Activity", value: label("voice", scores.voice) },
     { trait_type: "Heat", value: label("heat", scores.heat) },

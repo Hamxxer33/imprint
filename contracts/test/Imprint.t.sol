@@ -3,6 +3,7 @@ pragma solidity ^0.8.26;
 
 import {Test} from "forge-std/Test.sol";
 import {Imprint} from "../src/Imprint.sol";
+import {ImprintArt} from "../src/ImprintArt.sol";
 
 contract MockFeed {
     int256 public answer = 2700e8;
@@ -107,6 +108,13 @@ contract ImprintTest is Test {
 
         string memory uri = nft.tokenURI(1);
         assertTrue(bytes(uri).length > 100);
+
+        ArtView view_ = new ArtView();
+        string memory image = view_.svg(traits);
+        assertFalse(_contains(image, "<text"));
+        assertFalse(_contains(image, "IMPRINT"));
+        assertFalse(_contains(image, "trench"));
+        assertFalse(_contains(image, "BASE"));
     }
 
     function testRejectsWrongPrice() public {
@@ -163,5 +171,28 @@ contract ImprintTest is Test {
         // $4 at $2700/ETH = 4e18 / 2700 wei
         assertEq(mintWei, (uint256(4) * 1e18) / 2700);
         assertEq(refreshWei, (uint256(1) * 1e18) / 2700);
+    }
+
+    function _contains(string memory haystack, string memory needle) internal pure returns (bool) {
+        bytes memory h = bytes(haystack);
+        bytes memory n = bytes(needle);
+        if (n.length == 0 || n.length > h.length) return false;
+        for (uint256 i; i <= h.length - n.length; i++) {
+            bool ok = true;
+            for (uint256 j; j < n.length; j++) {
+                if (h[i + j] != n[j]) {
+                    ok = false;
+                    break;
+                }
+            }
+            if (ok) return true;
+        }
+        return false;
+    }
+}
+
+contract ArtView {
+    function svg(bytes32 t) external pure returns (string memory) {
+        return ImprintArt.svg(t);
     }
 }

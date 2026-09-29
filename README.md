@@ -2,14 +2,14 @@
 
 1/1 NFT passport on **Base**. Mint on the website for **$4**, paid in ETH.
 
-Each token is a unique **type** from that wallet’s Base activity — transactions, age, tokens, NFTs, and Basename. More activity fills more cells. OpenSea rarity comes from on-chain attributes.
+Each token is a unique **type** from that wallet’s Base activity — transactions, age, tokens, NFTs, and Basename. More activity fills more cells. The image is four plates only: no username, no labels. OpenSea rarity comes from on-chain attributes.
 
 ## Utility
 
 | What | How |
 |---|---|
 | **Passport** | Any contract calls `passport(address)` and gets token id, packed traits, type name, rarity score, and whether they still hold it. Use that to gate launches, fees, or allowlists. |
-| **OpenSea rarity** | `tokenURI` is on-chain JSON + SVG with Type, Rarity, Handle, Reach, Voice, Heat, Native, Bags, Vintage, Named, Rarity Score. Handle is 1/1. |
+| **OpenSea rarity** | `tokenURI` is on-chain JSON + SVG with Type, Rarity, Network, Activity, Heat, Native, Bags, Vintage, Named, Rarity Score. The SVG has no text. |
 | **Refresh** | If their X or Base activity grew, the holder updates the same token for **$1** in ETH. Art fills in; type can upgrade. |
 | **Royalty** | 5% EIP-2981 to the owner. |
 
@@ -43,8 +43,8 @@ Live on Base (`8453`):
 
 | | |
 |---|---|
-| Imprint | [`0xbc162E16E3BB4f8dd25B47a908E211BD413B3a62`](https://basescan.org/address/0xbc162E16E3BB4f8dd25B47a908E211BD413B3a62#code) |
-| Deploy tx | [`0xfa9cdc8b…e7a9bd`](https://basescan.org/tx/0xfa9cdc8b0074de81d3e4347822d6ffd081dae6b34294988c1767d1af26e7a9bd) |
+| Imprint | [`0xE43E4c3cbB5d572977a3f5F188c3eE8461E2D968`](https://basescan.org/address/0xE43E4c3cbB5d572977a3f5F188c3eE8461E2D968#code) |
+| Deploy tx | [`0xd4a2eccf…12b303`](https://basescan.org/tx/0xd4a2eccff598c6bb73f3660ed2c5960da872b358ca3963bcfeed286e2912b303) |
 
 Price: **$4** mint, **$1** refresh, paid in ETH via Chainlink ETH/USD.
 

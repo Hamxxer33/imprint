@@ -5,62 +5,42 @@ import {Base64} from "./Base64.sol";
 
 /// @notice On-chain SVG + OpenSea metadata for an Imprint passport.
 library ImprintArt {
-    function tokenURI(uint256 id, bytes32 traits, string memory handle) internal pure returns (string memory) {
-        string memory image = Base64.encode(bytes(svg(id, traits, handle)));
+    function tokenURI(uint256 id, bytes32 traits, string memory) internal pure returns (string memory) {
+        string memory image = Base64.encode(bytes(svg(traits)));
         string memory json = string.concat(
             '{"name":"Imprint #',
             _u(id),
             '","description":"',
             typeName(traits),
-            " - a 1/1 imprint of ",
-            handle,
-            "'s Base wallet. Rarity ",
+            ". A 1/1 imprint of a Base wallet. Rarity ",
             rarityName(traits),
             '. Passport other contracts can read.","image":"data:image/svg+xml;base64,',
             image,
             '","attributes":',
-            attributes(traits, handle),
+            attributes(traits),
             "}"
         );
         return string.concat("data:application/json;base64,", Base64.encode(bytes(json)));
     }
 
-    function svg(uint256 id, bytes32 traits, string memory handle) internal pure returns (string memory) {
+    function svg(bytes32 traits) internal pure returns (string memory) {
         return string.concat(
             '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">',
             '<rect width="800" height="800" fill="#FFFFFF"/>',
-            '<text x="84" y="48" fill="#0C0E12" font-family="sans-serif" font-size="20" font-weight="700">IMPRINT</text>',
-            '<text x="716" y="48" text-anchor="end" fill="#5A6070" font-family="monospace" font-size="18">#',
-            _pad(id),
-            "</text>",
-            '<text x="84" y="78" fill="#0C0E12" font-family="sans-serif" font-size="18" font-weight="700">',
-            _up(typeName(traits)),
-            "</text>",
-            '<text x="716" y="78" text-anchor="end" fill="',
-            rarityColor(traits),
-            '" font-family="sans-serif" font-size="14">',
-            _up(rarityName(traits)),
-            "</text>",
-            '<text x="84" y="102" fill="#8C92A0" font-family="monospace" font-size="13">',
-            handle,
-            "</text>",
-            '<text x="716" y="102" text-anchor="end" fill="#8C92A0" font-family="monospace" font-size="13">BASE</text>',
-            _plate(traits, 0, "#00B5E2", 84, 128),
-            _plate(traits, 1, "#E6007A", 428, 128),
-            _plate(traits, 2, "#F0BA00", 84, 472),
-            _plate(traits, 3, "#111216", 428, 472),
+            _plate(traits, 0, "#00B5E2", 32, 32),
+            _plate(traits, 1, "#E6007A", 420, 32),
+            _plate(traits, 2, "#F0BA00", 32, 420),
+            _plate(traits, 3, "#111216", 420, 420),
             "</svg>"
         );
     }
 
-    function attributes(bytes32 t, string memory handle) internal pure returns (string memory) {
+    function attributes(bytes32 t) internal pure returns (string memory) {
         return string.concat(
             "[",
             _attr("Type", typeName(t)),
             ",",
             _attr("Rarity", rarityName(t)),
-            ",",
-            _attr("Handle", handle),
             ",",
             _attr("Network", _label(1, _band(uint8(t[1])))),
             ",",
@@ -142,15 +122,6 @@ library ImprintArt {
         return "Legendary";
     }
 
-    function rarityColor(bytes32 t) internal pure returns (string memory) {
-        uint256 s = rarityScore(t);
-        if (s < 70) return "#8C92A0";
-        if (s < 110) return "#2EA05A";
-        if (s < 150) return "#007ACC";
-        if (s < 190) return "#8C46DC";
-        return "#C88C14";
-    }
-
     function _plate(bytes32 traits, uint8 plate, string memory color, uint256 ox, uint256 oy)
         private
         pure
@@ -162,8 +133,8 @@ library ImprintArt {
         else if (plate == 2) score = uint8(traits[3]);
         else score = (uint256(uint8(traits[0])) + uint256(uint8(traits[4]))) / 2;
         uint256 threshold = 24 + (score * 216) / 255;
-        uint256 cell = 36;
-        uint256 gap = 2;
+        uint256 cell = 40;
+        uint256 gap = 4;
         string memory out;
         for (uint256 y; y < 8; y++) {
             for (uint256 x; x < 8; x++) {
@@ -177,7 +148,7 @@ library ImprintArt {
                     _u(x0),
                     '" y="',
                     _u(y0),
-                    '" width="36" height="36" rx="3" fill="',
+                    '" width="40" height="40" rx="3" fill="',
                     fill,
                     '"/>'
                 );
@@ -263,20 +234,4 @@ library ImprintArt {
         return string(buffer);
     }
 
-    function _pad(uint256 id) private pure returns (string memory) {
-        string memory s = _u(id);
-        if (id >= 1000) return s;
-        if (id >= 100) return string.concat("0", s);
-        if (id >= 10) return string.concat("00", s);
-        return string.concat("000", s);
-    }
-
-    function _up(string memory s) private pure returns (string memory) {
-        bytes memory b = bytes(s);
-        for (uint256 i; i < b.length; i++) {
-            uint8 c = uint8(b[i]);
-            if (c >= 97 && c <= 122) b[i] = bytes1(c - 32);
-        }
-        return string(b);
-    }
 }

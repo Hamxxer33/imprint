@@ -1,6 +1,6 @@
 {
   "name": "Imprint #1",
-  "description": "Ancient Machine \u2014 a 1/1 imprint of @trench's X history and Base wallet. Rarity Epic.",
+  "description": "Ancient Machine. A 1/1 imprint of a Base wallet. Rarity Epic.",
   "image": "imprint-1.svg",
   "attributes": [
     {
@@ -10,10 +10,6 @@
     {
       "trait_type": "Rarity",
       "value": "Epic"
-    },
-    {
-      "trait_type": "Handle",
-      "value": "@trench"
     },
     {
       "trait_type": "Reach",
